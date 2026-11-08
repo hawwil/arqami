@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أرقامي</title>
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="أرقامي">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#f5f7f6; --card:#ffffff; --text:#14201d; --muted:#6b7a76; --line:#e3e9e7;
+  --brand:#0f766e; --brand-soft:#e1f2ef; --danger:#b42318; --call:#16a34a;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e1513; --card:#17211f; --text:#e8efed; --muted:#93a39f; --line:#25322f;
+         --brand:#2dd4bf; --brand-soft:#16302c; --danger:#f97066; --call:#22c55e; }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:-apple-system,"SF Arabic","Segoe UI","Noto Sans Arabic","Tahoma",sans-serif;
+  font-size:16px;line-height:1.5;padding-bottom:env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+h1{font-size:22px;margin:0;font-weight:800}
+.count{color:var(--muted);font-size:13px;margin-inline-start:8px;font-weight:500}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  display:grid;place-items:center;cursor:pointer}
+.iconbtn svg{width:20px;height:20px}
+.search{position:relative}
+.search input{width:100%;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+  color:var(--text);font:inherit;padding:0 44px 0 40px;outline:none}
+.search input:focus{border-color:var(--brand)}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.search .mag{position:absolute;right:14px;top:13px;width:20px;height:20px;color:var(--muted)}
+.search .clr{position:absolute;left:8px;top:7px;width:32px;height:32px;border:0;background:none;
+  color:var(--muted);display:none;cursor:pointer;font-size:20px}
+.list{padding:8px 16px}
+.letter{font-size:13px;font-weight:700;color:var(--brand);padding:12px 4px 4px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:6px 0;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer}
+.av{flex:0 0 42px;height:42px;border-radius:50%;background:var(--brand-soft);color:var(--brand);
+  display:grid;place-items:center;font-weight:800;font-size:17px}
+.info{flex:1;min-width:0}
+.nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{color:var(--muted);font-size:14px;direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.call{flex:0 0 42px;height:42px;border-radius:50%;background:var(--call);color:#fff;display:grid;place-items:center;text-decoration:none}
+.call svg{width:20px;height:20px}
+.nums{border-top:1px solid var(--line);padding:4px 12px 8px}
+.num{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:10px}
+.num + .num{border-top:1px dashed var(--line)}
+.num .t{font-size:12px;color:var(--muted)}
+.num .v{direction:ltr;font-weight:600}
+.num .call{flex-basis:38px;height:38px}
+mark{background:#fde68a;color:#14201d;border-radius:3px;padding:0 1px}
+.empty{text-align:center;padding:40px 24px;color:var(--muted)}
+.empty h2{color:var(--text);font-size:20px;margin:12px 0 6px}
+.steps{text-align:right;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:18px 0;color:var(--text)}
+.steps ol{margin:6px 0 0;padding-inline-start:20px}
+.steps li{margin:6px 0}
+.steps code{direction:ltr;display:inline-block;background:var(--brand-soft);color:var(--brand);padding:0 6px;border-radius:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:14px;
+  border:0;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;width:100%;max-width:340px}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--line)}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+  z-index:21;transform:translateY(105%);transition:transform .25s ease;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sheet.open{transform:none}
+.sheet h3{margin:0 0 4px;font-size:18px}
+.sheet .meta{color:var(--muted);font-size:14px;text-align:center;margin-bottom:6px}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:var(--bg);padding:10px 18px;border-radius:12px;opacity:0;transition:.25s;z-index:30;font-size:14px;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.more{text-align:center;color:var(--muted);font-size:13px;padding:10px}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px 16px 32px;line-height:1.9}
+footer a{color:var(--text);font-weight:800;text-decoration:underline}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<header class="top" id="top" hidden>
+  <div class="bar">
+    <h1>أرقامي<span class="count" id="count"></span></h1>
+    <button class="iconbtn" id="menuBtn" aria-label="الإعدادات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+    </button>
+  </div>
+  <div class="search">
+    <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="ابحث بالاسم أو بالرقم" autocomplete="off" enterkeyhint="search">
+    <button class="clr" id="clr" aria-label="مسح">×</button>
+  </div>
+</header>
+
+<main>
+  <section class="empty" id="welcome" hidden>
+    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:var(--brand)"><rect x="4" y="3" width="15" height="18" rx="3"/><circle cx="11.5" cy="10" r="2.6"/><path d="M7.5 17c.8-2 2.3-3 4-3s3.2 1 4 3"/><path d="M19 7h1.5M19 12h1.5M19 17h1.5"/></svg>
+    <h2>أهلاً فيك بـ أرقامي</h2>
+    <div>جهات اتصال حساب غوغل تبعك، بتشتغل بدون نت، وما بتدخل على أسماء الجوال.</div>
+    <div class="steps">
+      <b>كيف تجيب الأسماء من غوغل (مرة وحدة):</b>
+      <ol>
+        <li>افتح <code>contacts.google.com</code> وادخل بحساب الجيميل.</li>
+        <li>اختار <b>تصدير</b> (Export)، وبعدين <b>vCard</b>.</li>
+        <li>نزّل الملف، وارجع هنا واكبس الزر تحت واختاره.</li>
+      </ol>
+    </div>
+    <button class="btn" data-import>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+      اختار ملف جهات الاتصال
+    </button>
+    <div class="note">الأسماء بتنحفظ جوا التطبيق على جهازك بس، وما بتنرفع لأي مكان.</div>
+  </section>
+
+  <section class="list" id="list"></section>
+  <div class="more" id="more"></div>
+</main>
+
+<footer>
+  تم التطوير من <a href="https://instagram.com/nexa.ryx" target="_blank" rel="noopener">NEXA</a> للخدمات الرقمية<br>
+  © NEXA 2026 · جميع الحقوق محفوظة<br>
+  الإصدار 1.0
+</footer>
+
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet">
+  <h3>الإعدادات</h3>
+  <div class="meta" id="meta"></div>
+  <button class="btn" data-import>تحديث الأسماء من ملف جديد</button>
+  <button class="btn danger" id="wipe">حذف كل الأسماء من التطبيق</button>
+  <button class="btn ghost" id="closeSheet">إغلاق</button>
+</div>
+
+<input type="file" id="file">
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "arqami.contacts.v1", KEY_META = "arqami.meta.v1";
+  var contacts = [], filtered = [], shown = 0, PAGE = 150, openId = null;
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- storage ---------- */
+  function load(){
+    try { contacts = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch(e){ contacts = []; }
+    contacts.forEach(index);
+  }
+  function save(meta){
+    try {
+      localStorage.setItem(KEY, JSON.stringify(contacts.map(function(c){ return {n:c.n, o:c.o, p:c.p}; })));
+      localStorage.setItem(KEY_META, JSON.stringify(meta));
+      return true;
+    } catch(e){ toast("ما قدرت أحفظ الأسماء على الجهاز"); return false; }
+  }
+  function meta(){ try { return JSON.parse(localStorage.getItem(KEY_META) || "{}"); } catch(e){ return {}; } }
+
+  /* ---------- normalising for search ---------- */
+  function normText(s){
+    return (s || "").toLowerCase()
+      .replace(/[ً-ْٰـ]/g, "")
+      .replace(/[أإآٱ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي")
+      .replace(/ؤ/g, "و").replace(/ئ/g, "ي")
+      .replace(/\s+/g, " ").trim();
+  }
+  function toLatinDigits(s){
+    return (s || "").replace(/[٠-٩]/g, function(d){ return "٠١٢٣٤٥٦٧٨٩".indexOf(d); })
+                    .replace(/[۰-۹]/g, function(d){ return "۰۱۲۳۴۵۶۷۸۹".indexOf(d); });
+  }
+  function digits(s){ return toLatinDigits(s).replace(/\D/g, ""); }
+  function localDigits(d){ // 970595... / 972595... / 0595... -> 595...
+    return d.replace(/^00/, "").replace(/^97[02]/, "").replace(/^0/, "");
+  }
+  function index(c){
+    c.k = normText(c.n + " " + (c.o || ""));
+    c.d = c.p.map(function(x){ return localDigits(digits(x.v)); }).join(" ");
+  }
+
+  /* ---------- vCard parser ---------- */
+  function unescapeV(s){ return s.replace(/\\n/gi, " ").replace(/\\([,;\\])/g, "$1"); }
+  function decodeQP(s, charset){
+    try {
+      var bytes = [], str = s.replace(/=\r?\n/g, "");
+      for (var i = 0; i < str.length; i++){
+        if (str[i] === "=" && /[0-9A-F]{2}/i.test(str.substr(i+1,2))){ bytes.push(parseInt(str.substr(i+1,2),16)); i += 2; }
+        else bytes.push(str.charCodeAt(i));
+      }
+      return new TextDecoder(charset || "utf-8").decode(new Uint8Array(bytes));
+    } catch(e){ return s; }
+  }
+  var TYPE_AR = {cell:"موبايل", mobile:"موبايل", home:"البيت", work:"الشغل", main:"رئيسي", other:"آخر", fax:"فاكس", pager:"بيجر", iphone:"آيفون"};
+  function parseVCF(text){
+    var lines = text.replace(/\r\n/g, "\n").replace(/\n[ \t]/g, "").split("\n");
+    // join quoted-printable soft breaks
+    var joined = [];
+    for (var i = 0; i < lines.length; i++){
+      var l = lines[i];
+      while (/QUOTED-PRINTABLE/i.test(l.split(":")[0]) && /=$/.test(l) && i+1 < lines.length){ l = l.slice(0,-1) + lines[++i]; }
+      joined.push(l);
+    }
+    var out = [], cur = null, labels = {};
+    joined.forEach(function(line){
+      if (/^BEGIN:VCARD/i.test(line)){ cur = {fn:"", n:"", o:"", p:[]}; labels = {}; return; }
+      if (/^END:VCARD/i.test(line)){
+        if (cur){
+          cur.p.forEach(function(p){ if (p.g && labels[p.g]) p.t = labels[p.g]; delete p.g; });
+          var name = cur.fn || cur.n || cur.o || (cur.p[0] && cur.p[0].v) || "";
+          if (cur.p.length) out.push({n:name.trim(), o:cur.o, p:cur.p});
+        }
+        cur = null; return;
+      }
+      if (!cur) return;
+      var idx = line.indexOf(":"); if (idx < 0) return;
+      var head = line.slice(0, idx), val = line.slice(idx + 1);
+      var parts = head.split(";"), prop = parts[0], group = "";
+      if (prop.indexOf(".") > -1){ group = prop.split(".")[0]; prop = prop.split(".")[1]; }
+      prop = prop.toUpperCase();
+      var params = parts.slice(1).join(";");
+      if (/QUOTED-PRINTABLE/i.test(params)){
+        var cs = (params.match(/CHARSET=([^;:]+)/i) || [])[1];
+        val = decodeQP(val, cs);
+      }
+      if (prop === "FN") cur.fn = unescapeV(val);
+      else if (prop === "N" && !cur.n){
+        var np = val.split(";").map(unescapeV); // family;given;middle;prefix;suffix
+        cur.n = [np[3], np[1], np[2], np[0], np[4]].filter(Boolean).join(" ");
+      }
+      else if (prop === "ORG" && !cur.o) cur.o = unescapeV(val.split(";")[0]);
+      else if (prop === "TEL"){
+        var v = toLatinDigits(val.replace(/^tel:/i, "")).trim();
+        if (!digits(v)) return;
+        var types = (params.match(/TYPE=([^;]+)/ig) || []).join(",").replace(/TYPE=/ig, "").toLowerCase().split(",");
+        var t = ""; for (var j = 0; j < types.length; j++){ if (TYPE_AR[types[j]]) { t = TYPE_AR[types[j]]; break; } }
+        cur.p.push({v:v, t:t, g:group});
+      }
+      else if (prop === "X-ABLABEL" && group){
+        labels[group] = unescapeV(val).replace(/^_\$!<|>!\$_$/g, "");
+      }
+    });
+    return out;
+  }
+
+  /* ---------- Google CSV parser ---------- */
+  function parseCSVRows(text){
+    var rows = [], row = [], f = "", q = false;
+    for (var i = 0; i < text.length; i++){
+      var ch = text[i];
+      if (q){
+        if (ch === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; }
+        else f += ch;
+      } else {
+        if (ch === '"') q = true;
+        else if (ch === ","){ row.push(f); f = ""; }
+        else if (ch === "\n" || ch === "\r"){ if (ch === "\r" && text[i+1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+        else f += ch;
+      }
+    }
+    if (f || row.length){ row.push(f); rows.push(row); }
+    return rows;
+  }
+  function parseCSV(text){
+    var rows = parseCSVRows(text.replace(/^﻿/, ""));
+    if (rows.length < 2) return [];
+    var h = rows[0].map(function(x){ return x.trim(); });
+    var col = function(name){ return h.indexOf(name); };
+    var iName = col("Name"), iFirst = col("First Name"), iMid = col("Middle Name"), iLast = col("Last Name"),
+        iOrg = col("Organization Name") > -1 ? col("Organization Name") : col("Organization 1 - Name");
+    var phoneCols = [];
+    h.forEach(function(name, i){
+      var m = name.match(/^Phone (\d+) - Value$/);
+      if (m) phoneCols.push({v:i, t:h.indexOf("Phone " + m[1] + " - Label") > -1 ? h.indexOf("Phone " + m[1] + " - Label") : h.indexOf("Phone " + m[1] + " - Type")});
+    });
+    var out = [];
+    rows.slice(1).forEach(function(r){
+      var name = (iName > -1 && r[iName]) || [r[iFirst], r[iMid], r[iLast]].filter(Boolean).join(" ");
+      var org = iOrg > -1 ? (r[iOrg] || "") : "";
+      var p = [];
+      phoneCols.forEach(function(pc){
+        var raw = r[pc.v] || ""; if (!raw) return;
+        var label = (pc.t > -1 ? r[pc.t] : "") || "";
+        label = label.replace(/^\*\s*/, "").toLowerCase();
+        raw.split(":::").forEach(function(v){
+          v = toLatinDigits(v).trim();
+          if (digits(v)) p.push({v:v, t:TYPE_AR[label] || ""});
+        });
+      });
+      if (p.length) out.push({n:(name || org || p[0].v).trim(), o:org, p:p});
+    });
+    return out;
+  }
+
+  /* ---------- import ---------- */
+  function importFile(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var text = String(reader.result || "");
+      var list = /BEGIN:VCARD/i.test(text) ? parseVCF(text) : (/Phone 1 - Value|First Name|Name/.test(text.slice(0, 2000)) ? parseCSV(text) : []);
+      if (!list.length){ toast("الملف ما فيه أسماء بأرقام. تأكد إنه ملف vCard من غوغل"); return; }
+      // merge duplicates by name and drop repeated numbers
+      var map = {};
+      list.forEach(function(c){
+        var key = normText(c.n);
+        if (!map[key]) map[key] = {n:c.n, o:c.o, p:[]};
+        c.p.forEach(function(p){
+          var dd = localDigits(digits(p.v));
+          if (!map[key].p.some(function(x){ return localDigits(digits(x.v)) === dd; })) map[key].p.push(p);
+        });
+      });
+      contacts = Object.keys(map).map(function(k){ return map[k]; });
+      sortContacts();
+      contacts.forEach(index);
+      var m = {date: new Date().toISOString(), file: file.name};
+      if (save(m)){
+        toast("تم حفظ " + contacts.length + " اسم ✓");
+        closeSheet(); $("q").value = ""; render();
+      }
+    };
+    reader.onerror = function(){ toast("ما قدرت أقرأ الملف"); };
+    reader.readAsText(file);
+  }
+  function sortContacts(){
+    var coll = new Intl.Collator("ar", {sensitivity:"base", numeric:true});
+    contacts.sort(function(a, b){
+      var aa = /^[؀-ۿ]/.test(a.n) ? 0 : 1, bb = /^[؀-ۿ]/.test(b.n) ? 0 : 1;
+      return aa - bb || coll.compare(a.n, b.n);
+    });
+  }
+
+  /* ---------- search & render ---------- */
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function highlight(text, q){
+    if (!q) return esc(text);
+    // map normalised positions back to the original string
+    var src = text, norm = "", map = [];
+    for (var i = 0; i < src.length; i++){
+      var n = normText(src[i]);
+      if (/[ً-ْٰـ]/.test(src[i])) { continue; }
+      n = n === "" && /\s/.test(src[i]) ? " " : n;
+      for (var j = 0; j < n.length; j++){ norm += n[j]; map.push(i); }
+    }
+    var at = norm.indexOf(q);
+    if (at < 0) return esc(text);
+    var s = map[at], e = map[at + q.length - 1] + 1;
+    return esc(src.slice(0, s)) + "<mark>" + esc(src.slice(s, e)) + "</mark>" + esc(src.slice(e));
+  }
+  var PHONE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>';
+  function telHref(v){ return "tel:" + toLatinDigits(v).replace(/[^\d+*#]/g, ""); }
+
+  function filter(){
+    var raw = $("q").value, qt = normText(raw), qd = localDigits(digits(raw));
+    var isNum = qd.length > 0 && !/[^\d\s+\-()٠-٩]/.test(raw);
+    if (!qt) filtered = contacts;
+    else filtered = contacts.filter(function(c){
+      if (isNum) return c.d.indexOf(qd) > -1;
+      return qt.split(" ").every(function(w){ return c.k.indexOf(w) > -1; });
+    });
+    $("clr").style.display = raw ? "block" : "none";
+    return {qt: isNum ? "" : qt.split(" ")[0], qd: isNum ? qd : ""};
+  }
+  var last = {qt:"", qd:""};
+  function render(){
+    var has = contacts.length > 0;
+    $("welcome").hidden = has; $("top").hidden = !has;
+    $("list").innerHTML = ""; $("more").textContent = ""; shown = 0;
+    if (!has) return;
+    $("count").textContent = contacts.length + " اسم";
+    last = filter();
+    if (!filtered.length){ $("list").innerHTML = '<div class="empty">ما في نتيجة لـ "' + esc($("q").value) + '"</div>'; return; }
+    renderMore();
+  }
+  var lastLetter = "";
+  function renderMore(){
+    var frag = document.createDocumentFragment(), end = Math.min(filtered.length, shown + PAGE);
+    if (shown === 0) lastLetter = "";
+    for (var i = shown; i < end; i++){
+      var c = filtered[i], L = normText(c.n.charAt(0)).toUpperCase() || "#";
+      if (!last.qt && !last.qd && L !== lastLetter){
+        var h = document.createElement("div"); h.className = "letter"; h.textContent = L; frag.appendChild(h); lastLetter = L;
+      }
+      frag.appendChild(card(c, i));
+    }
+    $("list").appendChild(frag); shown = end;
+    $("more").textContent = shown < filtered.length ? "" : (last.qt || last.qd ? filtered.length + " نتيجة" : "");
+  }
+  function numLine(p){
+    if (last.qd){
+      var d = digits(p.v);
+      // highlight matching digits in the displayed number when it is plain
+      if (/^[\d+ ]+$/.test(p.v)){
+        var at = d.indexOf(last.qd);
+        if (at > -1){
+          var lead = (p.v.match(/^\+/) ? "+" : ""), body = d;
+          return esc(lead + body.slice(0, at)) + "<mark>" + esc(body.substr(at, last.qd.length)) + "</mark>" + esc(body.slice(at + last.qd.length));
+        }
+      }
+    }
+    return esc(p.v);
+  }
+  function card(c, i){
+    var el = document.createElement("div"); el.className = "c"; el.dataset.i = i;
+    var first = c.p[0], multi = c.p.length > 1;
+    var initial = (c.n.trim().charAt(0) || "#").toUpperCase();
+    var sub = multi ? (numLine(first) + ' <span style="direction:rtl">· ' + c.p.length + ' أرقام</span>') : numLine(first);
+    el.innerHTML =
+      '<div class="row">' +
+        '<div class="av">' + esc(initial) + '</div>' +
+        '<div class="info"><div class="nm">' + highlight(c.n, last.qt) + '</div><div class="sub">' + sub + '</div></div>' +
+        (multi ? '<button class="call" data-toggle aria-label="الأرقام" style="background:var(--brand-soft);color:var(--brand);border:0">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>'
+               : '<a class="call" href="' + telHref(first.v) + '" aria-label="اتصال">' + PHONE + '</a>') +
+      '</div>';
+    if (multi && (openId === i || last.qd)) el.appendChild(numsBlock(c));
+    return el;
+  }
+  function numsBlock(c){
+    var d = document.createElement("div"); d.className = "nums";
+    d.innerHTML = c.p.map(function(p){
+      return '<div class="num"><div><div class="v">' + numLine(p) + '</div>' + (p.t ? '<div class="t">' + esc(p.t) + '</div>' : '') + '</div>' +
+             '<a class="call" href="' + telHref(p.v) + '" aria-label="اتصال">' + PHONE + '</a></div>';
+    }).join("");
+    return d;
+  }
+
+  /* ---------- events ---------- */
+  $("list").addEventListener("click", function(e){
+    if (e.target.closest("a.call")) return; // let the tel: link open the dialer
+    var el = e.target.closest(".c"); if (!el) return;
+    var i = +el.dataset.i, c = filtered[i];
+    if (c.p.length === 1){ location.href = telHref(c.p[0].v); return; }
+    var block = el.querySelector(".nums");
+    if (block){ block.remove(); openId = null; }
+    else { el.appendChild(numsBlock(c)); openId = i; }
+  });
+  var t;
+  $("q").addEventListener("input", function(){ clearTimeout(t); openId = null; t = setTimeout(function(){ window.scrollTo(0,0); render(); }, 80); });
+  $("clr").addEventListener("click", function(){ $("q").value = ""; render(); $("q").focus(); });
+  window.addEventListener("scroll", function(){
+    if (shown < filtered.length && window.innerHeight + window.scrollY > document.body.offsetHeight - 800) renderMore();
+  }, {passive:true});
+
+  document.querySelectorAll("[data-import]").forEach(function(b){ b.addEventListener("click", function(){ $("file").value = ""; $("file").click(); }); });
+  $("file").addEventListener("change", function(){ if (this.files[0]) importFile(this.files[0]); });
+
+  function openSheet(){
+    var m = meta();
+    $("meta").innerHTML = contacts.length + " اسم محفوظ" + (m.date ? "<br>آخر تحديث: " + new Date(m.date).toLocaleDateString("ar-EG", {day:"numeric", month:"long", year:"numeric"}) : "");
+    $("sheetBg").style.display = "block"; requestAnimationFrame(function(){ $("sheet").classList.add("open"); });
+  }
+  function closeSheet(){ $("sheet").classList.remove("open"); setTimeout(function(){ $("sheetBg").style.display = "none"; }, 250); }
+  $("menuBtn").addEventListener("click", openSheet);
+  $("closeSheet").addEventListener("click", closeSheet);
+  $("sheetBg").addEventListener("click", closeSheet);
+  $("wipe").addEventListener("click", function(){
+    if (!confirm("أكيد بدك تحذف كل الأسماء من التطبيق؟ (حساب غوغل ما بيتأثر)")) return;
+    contacts = []; try { localStorage.removeItem(KEY); localStorage.removeItem(KEY_META); } catch(e){}
+    closeSheet(); render(); toast("انحذفت الأسماء من التطبيق");
+  });
+
+  function toast(msg){ var el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(el._t); el._t = setTimeout(function(){ el.classList.remove("show"); }, 2600); }
+
+  /* ---------- start ---------- */
+  load(); render();
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function(){});
+})();
+</script>
+</body>
+</html>
