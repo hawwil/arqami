@@ -222,7 +222,7 @@ input[type=file]{display:none}
 <footer>
   تم التطوير من <a href="https://instagram.com/nexa.ryx" target="_blank" rel="noopener">NEXA</a> للخدمات الرقمية<br>
   © NEXA 2026 · جميع الحقوق محفوظة<br>
-  الإصدار 1.1
+  الإصدار 1.2
 </footer>
 
 <!-- ======= settings sheet ======= -->
@@ -623,7 +623,16 @@ input[type=file]{display:none}
 
   /* ---------- start ---------- */
   load(); render();
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function(){});
+  if ("serviceWorker" in navigator && location.protocol === "https:"){
+    var hadSW = !!navigator.serviceWorker.controller, reloaded = false;
+    navigator.serviceWorker.register("sw.js", {updateViaCache: "none"}).then(function(reg){
+      reg.update();
+      document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") reg.update(); });
+    }).catch(function(){});
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      if (hadSW && !reloaded){ reloaded = true; location.reload(); }
+    });
+  }
 })();
 </script>
 </body>
